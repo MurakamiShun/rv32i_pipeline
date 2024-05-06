@@ -1,0 +1,678 @@
+
+rv32ui-p-ma_data:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00010000 <_start>:
+   10000:	0500006f          	j	10050 <reset_vector>
+
+00010004 <trap_vector>:
+   10004:	34202f73          	csrr	t5,mcause
+   10008:	00800f93          	li	t6,8
+   1000c:	03ff0863          	beq	t5,t6,1003c <write_tohost>
+   10010:	00900f93          	li	t6,9
+   10014:	03ff0463          	beq	t5,t6,1003c <write_tohost>
+   10018:	00b00f93          	li	t6,11
+   1001c:	03ff0063          	beq	t5,t6,1003c <write_tohost>
+   10020:	00000f13          	li	t5,0
+   10024:	000f0463          	beqz	t5,1002c <trap_vector+0x28>
+   10028:	000f0067          	jr	t5
+   1002c:	34202f73          	csrr	t5,mcause
+   10030:	000f5463          	bgez	t5,10038 <handle_exception>
+   10034:	0040006f          	j	10038 <handle_exception>
+
+00010038 <handle_exception>:
+   10038:	5391e193          	ori	gp,gp,1337
+
+0001003c <write_tohost>:
+   1003c:	00001f17          	auipc	t5,0x1
+   10040:	883f2223          	sw	gp,-1916(t5) # 108c0 <_end>
+   10044:	00001f17          	auipc	t5,0x1
+   10048:	880f2023          	sw	zero,-1920(t5) # 108c4 <_end+0x4>
+   1004c:	ff1ff06f          	j	1003c <write_tohost>
+
+00010050 <reset_vector>:
+   10050:	00000093          	li	ra,0
+   10054:	00000113          	li	sp,0
+   10058:	00000193          	li	gp,0
+   1005c:	00000213          	li	tp,0
+   10060:	00000293          	li	t0,0
+   10064:	00000313          	li	t1,0
+   10068:	00000393          	li	t2,0
+   1006c:	00000413          	li	s0,0
+   10070:	00000493          	li	s1,0
+   10074:	00000513          	li	a0,0
+   10078:	00000593          	li	a1,0
+   1007c:	00000613          	li	a2,0
+   10080:	00000693          	li	a3,0
+   10084:	00000713          	li	a4,0
+   10088:	00000793          	li	a5,0
+   1008c:	00000813          	li	a6,0
+   10090:	00000893          	li	a7,0
+   10094:	00000913          	li	s2,0
+   10098:	00000993          	li	s3,0
+   1009c:	00000a13          	li	s4,0
+   100a0:	00000a93          	li	s5,0
+   100a4:	00000b13          	li	s6,0
+   100a8:	00000b93          	li	s7,0
+   100ac:	00000c13          	li	s8,0
+   100b0:	00000c93          	li	s9,0
+   100b4:	00000d13          	li	s10,0
+   100b8:	00000d93          	li	s11,0
+   100bc:	00000e13          	li	t3,0
+   100c0:	00000e93          	li	t4,0
+   100c4:	00000f13          	li	t5,0
+   100c8:	00000f93          	li	t6,0
+   100cc:	f1402573          	csrr	a0,mhartid
+   100d0:	00051063          	bnez	a0,100d0 <reset_vector+0x80>
+   100d4:	00000297          	auipc	t0,0x0
+   100d8:	01028293          	addi	t0,t0,16 # 100e4 <reset_vector+0x94>
+   100dc:	30529073          	csrw	mtvec,t0
+   100e0:	74445073          	csrwi	0x744,8
+   100e4:	00000297          	auipc	t0,0x0
+   100e8:	01028293          	addi	t0,t0,16 # 100f4 <reset_vector+0xa4>
+   100ec:	30529073          	csrw	mtvec,t0
+   100f0:	18005073          	csrwi	satp,0
+   100f4:	00000297          	auipc	t0,0x0
+   100f8:	02028293          	addi	t0,t0,32 # 10114 <reset_vector+0xc4>
+   100fc:	30529073          	csrw	mtvec,t0
+   10100:	800002b7          	lui	t0,0x80000
+   10104:	fff28293          	addi	t0,t0,-1 # 7fffffff <fromhost+0x7ffef6ff>
+   10108:	3b029073          	csrw	pmpaddr0,t0
+   1010c:	01f00293          	li	t0,31
+   10110:	3a029073          	csrw	pmpcfg0,t0
+   10114:	30405073          	csrwi	mie,0
+   10118:	00000297          	auipc	t0,0x0
+   1011c:	01428293          	addi	t0,t0,20 # 1012c <reset_vector+0xdc>
+   10120:	30529073          	csrw	mtvec,t0
+   10124:	30205073          	csrwi	medeleg,0
+   10128:	30305073          	csrwi	mideleg,0
+   1012c:	00000193          	li	gp,0
+   10130:	00000297          	auipc	t0,0x0
+   10134:	ed428293          	addi	t0,t0,-300 # 10004 <trap_vector>
+   10138:	30529073          	csrw	mtvec,t0
+   1013c:	00100513          	li	a0,1
+   10140:	01f51513          	slli	a0,a0,0x1f
+   10144:	02054463          	bltz	a0,1016c <reset_vector+0x11c>
+   10148:	0ff0000f          	fence
+   1014c:	00100193          	li	gp,1
+   10150:	05d00893          	li	a7,93
+   10154:	00000513          	li	a0,0
+   10158:	00100593          	li	a1,1
+   1015c:	00c59593          	slli	a1,a1,0xc
+   10160:	00358023          	sb	gp,0(a1)
+   10164:	e9dff06f          	j	10000 <_start>
+   10168:	00000073          	ecall
+   1016c:	00000293          	li	t0,0
+   10170:	00028a63          	beqz	t0,10184 <reset_vector+0x134>
+   10174:	10529073          	csrw	stvec,t0
+   10178:	0000b2b7          	lui	t0,0xb
+   1017c:	10928293          	addi	t0,t0,265 # b109 <_start-0x4ef7>
+   10180:	30229073          	csrw	medeleg,t0
+   10184:	30005073          	csrwi	mstatus,0
+   10188:	00000297          	auipc	t0,0x0
+   1018c:	01428293          	addi	t0,t0,20 # 1019c <reset_vector+0x14c>
+   10190:	34129073          	csrw	mepc,t0
+   10194:	f1402573          	csrr	a0,mhartid
+   10198:	30200073          	mret
+   1019c:	00000417          	auipc	s0,0x0
+   101a0:	5a440413          	addi	s0,s0,1444 # 10740 <begin_signature>
+   101a4:	00100193          	li	gp,1
+   101a8:	20100313          	li	t1,513
+   101ac:	00141383          	lh	t2,1(s0)
+   101b0:	52731c63          	bne	t1,t2,106e8 <fail>
+   101b4:	00200193          	li	gp,2
+   101b8:	20100313          	li	t1,513
+   101bc:	00145383          	lhu	t2,1(s0)
+   101c0:	52731463          	bne	t1,t2,106e8 <fail>
+   101c4:	00300193          	li	gp,3
+   101c8:	04030337          	lui	t1,0x4030
+   101cc:	20130313          	addi	t1,t1,513 # 4030201 <fromhost+0x401f901>
+   101d0:	00142383          	lw	t2,1(s0)
+   101d4:	50731a63          	bne	t1,t2,106e8 <fail>
+   101d8:	00400193          	li	gp,4
+   101dc:	05040337          	lui	t1,0x5040
+   101e0:	30230313          	addi	t1,t1,770 # 5040302 <fromhost+0x502fa02>
+   101e4:	00242383          	lw	t2,2(s0)
+   101e8:	50731063          	bne	t1,t2,106e8 <fail>
+   101ec:	00500193          	li	gp,5
+   101f0:	06050337          	lui	t1,0x6050
+   101f4:	40330313          	addi	t1,t1,1027 # 6050403 <fromhost+0x603fb03>
+   101f8:	00342383          	lw	t2,3(s0)
+   101fc:	4e731663          	bne	t1,t2,106e8 <fail>
+   10200:	01000193          	li	gp,16
+   10204:	00002337          	lui	t1,0x2
+   10208:	01f30313          	addi	t1,t1,31 # 201f <_start-0xdfe1>
+   1020c:	01f41383          	lh	t2,31(s0)
+   10210:	4c731c63          	bne	t1,t2,106e8 <fail>
+   10214:	01100193          	li	gp,17
+   10218:	00002337          	lui	t1,0x2
+   1021c:	01f30313          	addi	t1,t1,31 # 201f <_start-0xdfe1>
+   10220:	01f45383          	lhu	t2,31(s0)
+   10224:	4c731263          	bne	t1,t2,106e8 <fail>
+   10228:	01200193          	li	gp,18
+   1022c:	201f2337          	lui	t1,0x201f2
+   10230:	e1d30313          	addi	t1,t1,-483 # 201f1e1d <fromhost+0x201e151d>
+   10234:	01d42383          	lw	t2,29(s0)
+   10238:	4a731863          	bne	t1,t2,106e8 <fail>
+   1023c:	01300193          	li	gp,19
+   10240:	21202337          	lui	t1,0x21202
+   10244:	f1e30313          	addi	t1,t1,-226 # 21201f1e <fromhost+0x211f161e>
+   10248:	01e42383          	lw	t2,30(s0)
+   1024c:	48731e63          	bne	t1,t2,106e8 <fail>
+   10250:	01400193          	li	gp,20
+   10254:	22212337          	lui	t1,0x22212
+   10258:	01f30313          	addi	t1,t1,31 # 2221201f <fromhost+0x2220171f>
+   1025c:	01f42383          	lw	t2,31(s0)
+   10260:	48731463          	bne	t1,t2,106e8 <fail>
+   10264:	01f00193          	li	gp,31
+   10268:	00004337          	lui	t1,0x4
+   1026c:	03f30313          	addi	t1,t1,63 # 403f <_start-0xbfc1>
+   10270:	03f41383          	lh	t2,63(s0)
+   10274:	46731a63          	bne	t1,t2,106e8 <fail>
+   10278:	02000193          	li	gp,32
+   1027c:	00004337          	lui	t1,0x4
+   10280:	03f30313          	addi	t1,t1,63 # 403f <_start-0xbfc1>
+   10284:	03f45383          	lhu	t2,63(s0)
+   10288:	46731063          	bne	t1,t2,106e8 <fail>
+   1028c:	02100193          	li	gp,33
+   10290:	403f4337          	lui	t1,0x403f4
+   10294:	e3d30313          	addi	t1,t1,-451 # 403f3e3d <fromhost+0x403e353d>
+   10298:	03d42383          	lw	t2,61(s0)
+   1029c:	44731663          	bne	t1,t2,106e8 <fail>
+   102a0:	02200193          	li	gp,34
+   102a4:	41404337          	lui	t1,0x41404
+   102a8:	f3e30313          	addi	t1,t1,-194 # 41403f3e <fromhost+0x413f363e>
+   102ac:	03e42383          	lw	t2,62(s0)
+   102b0:	42731c63          	bne	t1,t2,106e8 <fail>
+   102b4:	02300193          	li	gp,35
+   102b8:	42414337          	lui	t1,0x42414
+   102bc:	03f30313          	addi	t1,t1,63 # 4241403f <fromhost+0x4240373f>
+   102c0:	03f42383          	lw	t2,63(s0)
+   102c4:	42731263          	bne	t1,t2,106e8 <fail>
+   102c8:	02e00193          	li	gp,46
+   102cc:	ffff8337          	lui	t1,0xffff8
+   102d0:	18030313          	addi	t1,t1,384 # ffff8180 <fromhost+0xfffe7880>
+   102d4:	006410a3          	sh	t1,1(s0)
+   102d8:	00141383          	lh	t2,1(s0)
+   102dc:	40731663          	bne	t1,t2,106e8 <fail>
+   102e0:	02f00193          	li	gp,47
+   102e4:	00008337          	lui	t1,0x8
+   102e8:	38230313          	addi	t1,t1,898 # 8382 <_start-0x7c7e>
+   102ec:	006410a3          	sh	t1,1(s0)
+   102f0:	00145383          	lhu	t2,1(s0)
+   102f4:	3e731a63          	bne	t1,t2,106e8 <fail>
+   102f8:	03000193          	li	gp,48
+   102fc:	87868337          	lui	t1,0x87868
+   10300:	58430313          	addi	t1,t1,1412 # 87868584 <fromhost+0x87857c84>
+   10304:	006420a3          	sw	t1,1(s0)
+   10308:	00142383          	lw	t2,1(s0)
+   1030c:	3c731e63          	bne	t1,t2,106e8 <fail>
+   10310:	03100193          	li	gp,49
+   10314:	8b8a9337          	lui	t1,0x8b8a9
+   10318:	98830313          	addi	t1,t1,-1656 # 8b8a8988 <fromhost+0x8b898088>
+   1031c:	00642123          	sw	t1,2(s0)
+   10320:	00242383          	lw	t2,2(s0)
+   10324:	3c731263          	bne	t1,t2,106e8 <fail>
+   10328:	03200193          	li	gp,50
+   1032c:	8f8e9337          	lui	t1,0x8f8e9
+   10330:	d8c30313          	addi	t1,t1,-628 # 8f8e8d8c <fromhost+0x8f8d848c>
+   10334:	006421a3          	sw	t1,3(s0)
+   10338:	00342383          	lw	t2,3(s0)
+   1033c:	3a731663          	bne	t1,t2,106e8 <fail>
+   10340:	03d00193          	li	gp,61
+   10344:	ffffd337          	lui	t1,0xffffd
+   10348:	5d430313          	addi	t1,t1,1492 # ffffd5d4 <fromhost+0xfffeccd4>
+   1034c:	00641fa3          	sh	t1,31(s0)
+   10350:	01f41383          	lh	t2,31(s0)
+   10354:	38731a63          	bne	t1,t2,106e8 <fail>
+   10358:	03e00193          	li	gp,62
+   1035c:	0000d337          	lui	t1,0xd
+   10360:	7d630313          	addi	t1,t1,2006 # d7d6 <_start-0x282a>
+   10364:	00641fa3          	sh	t1,31(s0)
+   10368:	01f45383          	lhu	t2,31(s0)
+   1036c:	36731e63          	bne	t1,t2,106e8 <fail>
+   10370:	03f00193          	li	gp,63
+   10374:	dbdae337          	lui	t1,0xdbdae
+   10378:	9d830313          	addi	t1,t1,-1576 # dbdad9d8 <fromhost+0xdbd9d0d8>
+   1037c:	00642ea3          	sw	t1,29(s0)
+   10380:	01d42383          	lw	t2,29(s0)
+   10384:	36731263          	bne	t1,t2,106e8 <fail>
+   10388:	04000193          	li	gp,64
+   1038c:	dfdee337          	lui	t1,0xdfdee
+   10390:	ddc30313          	addi	t1,t1,-548 # dfdedddc <fromhost+0xdfddd4dc>
+   10394:	00642f23          	sw	t1,30(s0)
+   10398:	01e42383          	lw	t2,30(s0)
+   1039c:	34731663          	bne	t1,t2,106e8 <fail>
+   103a0:	04100193          	li	gp,65
+   103a4:	e3e2e337          	lui	t1,0xe3e2e
+   103a8:	1e030313          	addi	t1,t1,480 # e3e2e1e0 <fromhost+0xe3e1d8e0>
+   103ac:	00642fa3          	sw	t1,31(s0)
+   103b0:	01f42383          	lw	t2,31(s0)
+   103b4:	32731a63          	bne	t1,t2,106e8 <fail>
+   103b8:	04c00193          	li	gp,76
+   103bc:	00003337          	lui	t1,0x3
+   103c0:	53430313          	addi	t1,t1,1332 # 3534 <_start-0xcacc>
+   103c4:	02641fa3          	sh	t1,63(s0)
+   103c8:	03f41383          	lh	t2,63(s0)
+   103cc:	30731e63          	bne	t1,t2,106e8 <fail>
+   103d0:	04d00193          	li	gp,77
+   103d4:	00003337          	lui	t1,0x3
+   103d8:	73630313          	addi	t1,t1,1846 # 3736 <_start-0xc8ca>
+   103dc:	02641fa3          	sh	t1,63(s0)
+   103e0:	03f45383          	lhu	t2,63(s0)
+   103e4:	30731263          	bne	t1,t2,106e8 <fail>
+   103e8:	04e00193          	li	gp,78
+   103ec:	3b3a4337          	lui	t1,0x3b3a4
+   103f0:	93830313          	addi	t1,t1,-1736 # 3b3a3938 <fromhost+0x3b393038>
+   103f4:	02642ea3          	sw	t1,61(s0)
+   103f8:	03d42383          	lw	t2,61(s0)
+   103fc:	2e731663          	bne	t1,t2,106e8 <fail>
+   10400:	04f00193          	li	gp,79
+   10404:	3f3e4337          	lui	t1,0x3f3e4
+   10408:	d3c30313          	addi	t1,t1,-708 # 3f3e3d3c <fromhost+0x3f3d343c>
+   1040c:	02642f23          	sw	t1,62(s0)
+   10410:	03e42383          	lw	t2,62(s0)
+   10414:	2c731a63          	bne	t1,t2,106e8 <fail>
+   10418:	05000193          	li	gp,80
+   1041c:	43424337          	lui	t1,0x43424
+   10420:	14030313          	addi	t1,t1,320 # 43424140 <fromhost+0x43413840>
+   10424:	02642fa3          	sw	t1,63(s0)
+   10428:	03f42383          	lw	t2,63(s0)
+   1042c:	2a731e63          	bne	t1,t2,106e8 <fail>
+   10430:	05b00193          	li	gp,91
+   10434:	0000a337          	lui	t1,0xa
+   10438:	99830313          	addi	t1,t1,-1640 # 9998 <_start-0x6668>
+   1043c:	f9800393          	li	t2,-104
+   10440:	006410a3          	sh	t1,1(s0)
+   10444:	00140e03          	lb	t3,1(s0)
+   10448:	2bc39063          	bne	t2,t3,106e8 <fail>
+   1044c:	05c00193          	li	gp,92
+   10450:	0000a337          	lui	t1,0xa
+   10454:	b9a30313          	addi	t1,t1,-1126 # 9b9a <_start-0x6466>
+   10458:	f9b00393          	li	t2,-101
+   1045c:	006410a3          	sh	t1,1(s0)
+   10460:	00240e03          	lb	t3,2(s0)
+   10464:	29c39263          	bne	t2,t3,106e8 <fail>
+   10468:	05d00193          	li	gp,93
+   1046c:	0000a337          	lui	t1,0xa
+   10470:	d9c30313          	addi	t1,t1,-612 # 9d9c <_start-0x6264>
+   10474:	09c00393          	li	t2,156
+   10478:	006410a3          	sh	t1,1(s0)
+   1047c:	00144e03          	lbu	t3,1(s0)
+   10480:	27c39463          	bne	t2,t3,106e8 <fail>
+   10484:	05e00193          	li	gp,94
+   10488:	0000a337          	lui	t1,0xa
+   1048c:	f9e30313          	addi	t1,t1,-98 # 9f9e <_start-0x6062>
+   10490:	09f00393          	li	t2,159
+   10494:	006410a3          	sh	t1,1(s0)
+   10498:	00244e03          	lbu	t3,2(s0)
+   1049c:	25c39663          	bne	t2,t3,106e8 <fail>
+   104a0:	05f00193          	li	gp,95
+   104a4:	a3a2a337          	lui	t1,0xa3a2a
+   104a8:	1a030313          	addi	t1,t1,416 # a3a2a1a0 <fromhost+0xa3a198a0>
+   104ac:	fa000393          	li	t2,-96
+   104b0:	006420a3          	sw	t1,1(s0)
+   104b4:	00140e03          	lb	t3,1(s0)
+   104b8:	23c39863          	bne	t2,t3,106e8 <fail>
+   104bc:	06000193          	li	gp,96
+   104c0:	a7a6a337          	lui	t1,0xa7a6a
+   104c4:	5a430313          	addi	t1,t1,1444 # a7a6a5a4 <fromhost+0xa7a59ca4>
+   104c8:	0a500393          	li	t2,165
+   104cc:	00642123          	sw	t1,2(s0)
+   104d0:	00344e03          	lbu	t3,3(s0)
+   104d4:	21c39a63          	bne	t2,t3,106e8 <fail>
+   104d8:	06100193          	li	gp,97
+   104dc:	abaab337          	lui	t1,0xabaab
+   104e0:	9a830313          	addi	t1,t1,-1624 # abaaa9a8 <fromhost+0xaba9a0a8>
+   104e4:	ffffb3b7          	lui	t2,0xffffb
+   104e8:	aa938393          	addi	t2,t2,-1367 # ffffaaa9 <fromhost+0xfffea1a9>
+   104ec:	006421a3          	sw	t1,3(s0)
+   104f0:	00441e03          	lh	t3,4(s0)
+   104f4:	1fc39a63          	bne	t2,t3,106e8 <fail>
+   104f8:	06200193          	li	gp,98
+   104fc:	afaeb337          	lui	t1,0xafaeb
+   10500:	dac30313          	addi	t1,t1,-596 # afaeadac <fromhost+0xafada4ac>
+   10504:	0000b3b7          	lui	t2,0xb
+   10508:	fae38393          	addi	t2,t2,-82 # afae <_start-0x5052>
+   1050c:	006421a3          	sw	t1,3(s0)
+   10510:	00545e03          	lhu	t3,5(s0)
+   10514:	1dc39a63          	bne	t2,t3,106e8 <fail>
+   10518:	06a00193          	li	gp,106
+   1051c:	0000f337          	lui	t1,0xf
+   10520:	9e830313          	addi	t1,t1,-1560 # e9e8 <_start-0x1618>
+   10524:	fe800393          	li	t2,-24
+   10528:	00641fa3          	sh	t1,31(s0)
+   1052c:	01f40e03          	lb	t3,31(s0)
+   10530:	1bc39c63          	bne	t2,t3,106e8 <fail>
+   10534:	06b00193          	li	gp,107
+   10538:	0000f337          	lui	t1,0xf
+   1053c:	bea30313          	addi	t1,t1,-1046 # ebea <_start-0x1416>
+   10540:	feb00393          	li	t2,-21
+   10544:	00641fa3          	sh	t1,31(s0)
+   10548:	02040e03          	lb	t3,32(s0)
+   1054c:	19c39e63          	bne	t2,t3,106e8 <fail>
+   10550:	06c00193          	li	gp,108
+   10554:	0000f337          	lui	t1,0xf
+   10558:	dec30313          	addi	t1,t1,-532 # edec <_start-0x1214>
+   1055c:	0ec00393          	li	t2,236
+   10560:	00641fa3          	sh	t1,31(s0)
+   10564:	01f44e03          	lbu	t3,31(s0)
+   10568:	19c39063          	bne	t2,t3,106e8 <fail>
+   1056c:	06d00193          	li	gp,109
+   10570:	0000f337          	lui	t1,0xf
+   10574:	fee30313          	addi	t1,t1,-18 # efee <_start-0x1012>
+   10578:	0ef00393          	li	t2,239
+   1057c:	00641fa3          	sh	t1,31(s0)
+   10580:	02044e03          	lbu	t3,32(s0)
+   10584:	17c39263          	bne	t2,t3,106e8 <fail>
+   10588:	06e00193          	li	gp,110
+   1058c:	f3f2f337          	lui	t1,0xf3f2f
+   10590:	1f030313          	addi	t1,t1,496 # f3f2f1f0 <fromhost+0xf3f1e8f0>
+   10594:	ff000393          	li	t2,-16
+   10598:	00642ea3          	sw	t1,29(s0)
+   1059c:	01d40e03          	lb	t3,29(s0)
+   105a0:	15c39463          	bne	t2,t3,106e8 <fail>
+   105a4:	06f00193          	li	gp,111
+   105a8:	f7f6f337          	lui	t1,0xf7f6f
+   105ac:	5f430313          	addi	t1,t1,1524 # f7f6f5f4 <fromhost+0xf7f5ecf4>
+   105b0:	0f600393          	li	t2,246
+   105b4:	00642f23          	sw	t1,30(s0)
+   105b8:	02044e03          	lbu	t3,32(s0)
+   105bc:	13c39663          	bne	t2,t3,106e8 <fail>
+   105c0:	07000193          	li	gp,112
+   105c4:	fbfb0337          	lui	t1,0xfbfb0
+   105c8:	9f830313          	addi	t1,t1,-1544 # fbfaf9f8 <fromhost+0xfbf9f0f8>
+   105cc:	bfa00393          	li	t2,-1030
+   105d0:	00642ea3          	sw	t1,29(s0)
+   105d4:	01f41e03          	lh	t3,31(s0)
+   105d8:	11c39863          	bne	t2,t3,106e8 <fail>
+   105dc:	07100193          	li	gp,113
+   105e0:	ffff0337          	lui	t1,0xffff0
+   105e4:	dfc30313          	addi	t1,t1,-516 # fffefdfc <fromhost+0xfffdf4fc>
+   105e8:	000103b7          	lui	t2,0x10
+   105ec:	dfc38393          	addi	t2,t2,-516 # fdfc <_start-0x204>
+   105f0:	00642fa3          	sw	t1,31(s0)
+   105f4:	01f45e03          	lhu	t3,31(s0)
+   105f8:	0fc39863          	bne	t2,t3,106e8 <fail>
+   105fc:	07900193          	li	gp,121
+   10600:	00005337          	lui	t1,0x5
+   10604:	94830313          	addi	t1,t1,-1720 # 4948 <_start-0xb6b8>
+   10608:	04800393          	li	t2,72
+   1060c:	02641fa3          	sh	t1,63(s0)
+   10610:	03f40e03          	lb	t3,63(s0)
+   10614:	0dc39a63          	bne	t2,t3,106e8 <fail>
+   10618:	07a00193          	li	gp,122
+   1061c:	00005337          	lui	t1,0x5
+   10620:	b4a30313          	addi	t1,t1,-1206 # 4b4a <_start-0xb4b6>
+   10624:	04b00393          	li	t2,75
+   10628:	02641fa3          	sh	t1,63(s0)
+   1062c:	04040e03          	lb	t3,64(s0)
+   10630:	0bc39c63          	bne	t2,t3,106e8 <fail>
+   10634:	07b00193          	li	gp,123
+   10638:	00005337          	lui	t1,0x5
+   1063c:	d4c30313          	addi	t1,t1,-692 # 4d4c <_start-0xb2b4>
+   10640:	04c00393          	li	t2,76
+   10644:	02641fa3          	sh	t1,63(s0)
+   10648:	03f44e03          	lbu	t3,63(s0)
+   1064c:	09c39e63          	bne	t2,t3,106e8 <fail>
+   10650:	07c00193          	li	gp,124
+   10654:	00005337          	lui	t1,0x5
+   10658:	f4e30313          	addi	t1,t1,-178 # 4f4e <_start-0xb0b2>
+   1065c:	04f00393          	li	t2,79
+   10660:	02641fa3          	sh	t1,63(s0)
+   10664:	04044e03          	lbu	t3,64(s0)
+   10668:	09c39063          	bne	t2,t3,106e8 <fail>
+   1066c:	07d00193          	li	gp,125
+   10670:	53525337          	lui	t1,0x53525
+   10674:	15030313          	addi	t1,t1,336 # 53525150 <fromhost+0x53514850>
+   10678:	05000393          	li	t2,80
+   1067c:	02642ea3          	sw	t1,61(s0)
+   10680:	03d40e03          	lb	t3,61(s0)
+   10684:	07c39263          	bne	t2,t3,106e8 <fail>
+   10688:	07e00193          	li	gp,126
+   1068c:	57565337          	lui	t1,0x57565
+   10690:	55430313          	addi	t1,t1,1364 # 57565554 <fromhost+0x57554c54>
+   10694:	05600393          	li	t2,86
+   10698:	02642f23          	sw	t1,62(s0)
+   1069c:	04044e03          	lbu	t3,64(s0)
+   106a0:	05c39463          	bne	t2,t3,106e8 <fail>
+   106a4:	07f00193          	li	gp,127
+   106a8:	5b5a6337          	lui	t1,0x5b5a6
+   106ac:	95830313          	addi	t1,t1,-1704 # 5b5a5958 <fromhost+0x5b595058>
+   106b0:	000063b7          	lui	t2,0x6
+   106b4:	b5a38393          	addi	t2,t2,-1190 # 5b5a <_start-0xa4a6>
+   106b8:	02642ea3          	sw	t1,61(s0)
+   106bc:	03f41e03          	lh	t3,63(s0)
+   106c0:	03c39463          	bne	t2,t3,106e8 <fail>
+   106c4:	08000193          	li	gp,128
+   106c8:	5f5e6337          	lui	t1,0x5f5e6
+   106cc:	d5c30313          	addi	t1,t1,-676 # 5f5e5d5c <fromhost+0x5f5d545c>
+   106d0:	000063b7          	lui	t2,0x6
+   106d4:	d5c38393          	addi	t2,t2,-676 # 5d5c <_start-0xa2a4>
+   106d8:	02642fa3          	sw	t1,63(s0)
+   106dc:	03f45e03          	lhu	t3,63(s0)
+   106e0:	01c39463          	bne	t2,t3,106e8 <fail>
+   106e4:	02301863          	bne	zero,gp,10714 <pass>
+
+000106e8 <fail>:
+   106e8:	0ff0000f          	fence
+   106ec:	00018063          	beqz	gp,106ec <fail+0x4>
+   106f0:	00119193          	slli	gp,gp,0x1
+   106f4:	0011e193          	ori	gp,gp,1
+   106f8:	05d00893          	li	a7,93
+   106fc:	00018513          	mv	a0,gp
+   10700:	00100593          	li	a1,1
+   10704:	00c59593          	slli	a1,a1,0xc
+   10708:	00358023          	sb	gp,0(a1)
+   1070c:	8f5ff06f          	j	10000 <_start>
+   10710:	00000073          	ecall
+
+00010714 <pass>:
+   10714:	0ff0000f          	fence
+   10718:	00100193          	li	gp,1
+   1071c:	05d00893          	li	a7,93
+   10720:	00000513          	li	a0,0
+   10724:	00100593          	li	a1,1
+   10728:	00c59593          	slli	a1,a1,0xc
+   1072c:	00358023          	sb	gp,0(a1)
+   10730:	8d1ff06f          	j	10000 <_start>
+   10734:	00000073          	ecall
+   10738:	c0001073          	unimp
+   1073c:	0000                	.insn	2, 0x
+   1073e:	0000                	.insn	2, 0x
+
+00010740 <begin_signature>:
+   10740:	0100                	.insn	2, 0x0100
+   10742:	0302                	.insn	2, 0x0302
+   10744:	0504                	.insn	2, 0x0504
+   10746:	0706                	.insn	2, 0x0706
+   10748:	0908                	.insn	2, 0x0908
+   1074a:	0b0a                	.insn	2, 0x0b0a
+   1074c:	0d0c                	.insn	2, 0x0d0c
+   1074e:	0f0e                	.insn	2, 0x0f0e
+   10750:	1110                	.insn	2, 0x1110
+   10752:	1312                	.insn	2, 0x1312
+   10754:	1514                	.insn	2, 0x1514
+   10756:	1716                	.insn	2, 0x1716
+   10758:	1918                	.insn	2, 0x1918
+   1075a:	1b1a                	.insn	2, 0x1b1a
+   1075c:	1d1c                	.insn	2, 0x1d1c
+   1075e:	1f1e                	.insn	2, 0x1f1e
+   10760:	2120                	.insn	2, 0x2120
+   10762:	2322                	.insn	2, 0x2322
+   10764:	2524                	.insn	2, 0x2524
+   10766:	2726                	.insn	2, 0x2726
+   10768:	2928                	.insn	2, 0x2928
+   1076a:	2b2a                	.insn	2, 0x2b2a
+   1076c:	2d2c                	.insn	2, 0x2d2c
+   1076e:	2f2e                	.insn	2, 0x2f2e
+   10770:	3130                	.insn	2, 0x3130
+   10772:	3332                	.insn	2, 0x3332
+   10774:	3534                	.insn	2, 0x3534
+   10776:	3736                	.insn	2, 0x3736
+   10778:	3938                	.insn	2, 0x3938
+   1077a:	3b3a                	.insn	2, 0x3b3a
+   1077c:	3d3c                	.insn	2, 0x3d3c
+   1077e:	3f3e                	.insn	2, 0x3f3e
+   10780:	4140                	.insn	2, 0x4140
+   10782:	4342                	.insn	2, 0x4342
+   10784:	4544                	.insn	2, 0x4544
+   10786:	4746                	.insn	2, 0x4746
+   10788:	4948                	.insn	2, 0x4948
+   1078a:	4b4a                	.insn	2, 0x4b4a
+   1078c:	4d4c                	.insn	2, 0x4d4c
+   1078e:	4f4e                	.insn	2, 0x4f4e
+   10790:	5150                	.insn	2, 0x5150
+   10792:	5352                	.insn	2, 0x5352
+   10794:	5554                	.insn	2, 0x5554
+   10796:	5756                	.insn	2, 0x5756
+   10798:	5958                	.insn	2, 0x5958
+   1079a:	5b5a                	.insn	2, 0x5b5a
+   1079c:	5d5c                	.insn	2, 0x5d5c
+   1079e:	5f5e                	.insn	2, 0x5f5e
+   107a0:	6160                	.insn	2, 0x6160
+   107a2:	6362                	.insn	2, 0x6362
+   107a4:	6564                	.insn	2, 0x6564
+   107a6:	6766                	.insn	2, 0x6766
+   107a8:	6968                	.insn	2, 0x6968
+   107aa:	6b6a                	.insn	2, 0x6b6a
+   107ac:	6d6c                	.insn	2, 0x6d6c
+   107ae:	6f6e                	.insn	2, 0x6f6e
+   107b0:	7170                	.insn	2, 0x7170
+   107b2:	7372                	.insn	2, 0x7372
+   107b4:	7574                	.insn	2, 0x7574
+   107b6:	7776                	.insn	2, 0x7776
+   107b8:	7978                	.insn	2, 0x7978
+   107ba:	7b7a                	.insn	2, 0x7b7a
+   107bc:	7d7c                	.insn	2, 0x7d7c
+   107be:	7f7e                	.insn	2, 0x7f7e
+   107c0:	5050                	.insn	2, 0x5050
+   107c2:	5050                	.insn	2, 0x5050
+   107c4:	5050                	.insn	2, 0x5050
+   107c6:	5050                	.insn	2, 0x5050
+   107c8:	5050                	.insn	2, 0x5050
+   107ca:	5050                	.insn	2, 0x5050
+   107cc:	5050                	.insn	2, 0x5050
+   107ce:	5050                	.insn	2, 0x5050
+   107d0:	5050                	.insn	2, 0x5050
+   107d2:	5050                	.insn	2, 0x5050
+   107d4:	5050                	.insn	2, 0x5050
+   107d6:	5050                	.insn	2, 0x5050
+   107d8:	5050                	.insn	2, 0x5050
+   107da:	5050                	.insn	2, 0x5050
+   107dc:	5050                	.insn	2, 0x5050
+   107de:	5050                	.insn	2, 0x5050
+   107e0:	5050                	.insn	2, 0x5050
+   107e2:	5050                	.insn	2, 0x5050
+   107e4:	5050                	.insn	2, 0x5050
+   107e6:	5050                	.insn	2, 0x5050
+   107e8:	5050                	.insn	2, 0x5050
+   107ea:	5050                	.insn	2, 0x5050
+   107ec:	5050                	.insn	2, 0x5050
+   107ee:	5050                	.insn	2, 0x5050
+   107f0:	5050                	.insn	2, 0x5050
+   107f2:	5050                	.insn	2, 0x5050
+   107f4:	5050                	.insn	2, 0x5050
+   107f6:	5050                	.insn	2, 0x5050
+   107f8:	5050                	.insn	2, 0x5050
+   107fa:	5050                	.insn	2, 0x5050
+   107fc:	5050                	.insn	2, 0x5050
+   107fe:	5050                	.insn	2, 0x5050
+   10800:	5050                	.insn	2, 0x5050
+   10802:	5050                	.insn	2, 0x5050
+   10804:	5050                	.insn	2, 0x5050
+   10806:	5050                	.insn	2, 0x5050
+   10808:	5050                	.insn	2, 0x5050
+   1080a:	5050                	.insn	2, 0x5050
+   1080c:	5050                	.insn	2, 0x5050
+   1080e:	5050                	.insn	2, 0x5050
+   10810:	5050                	.insn	2, 0x5050
+   10812:	5050                	.insn	2, 0x5050
+   10814:	5050                	.insn	2, 0x5050
+   10816:	5050                	.insn	2, 0x5050
+   10818:	5050                	.insn	2, 0x5050
+   1081a:	5050                	.insn	2, 0x5050
+   1081c:	5050                	.insn	2, 0x5050
+   1081e:	5050                	.insn	2, 0x5050
+   10820:	5050                	.insn	2, 0x5050
+   10822:	5050                	.insn	2, 0x5050
+   10824:	5050                	.insn	2, 0x5050
+   10826:	5050                	.insn	2, 0x5050
+   10828:	5050                	.insn	2, 0x5050
+   1082a:	5050                	.insn	2, 0x5050
+   1082c:	5050                	.insn	2, 0x5050
+   1082e:	5050                	.insn	2, 0x5050
+   10830:	5050                	.insn	2, 0x5050
+   10832:	5050                	.insn	2, 0x5050
+   10834:	5050                	.insn	2, 0x5050
+   10836:	5050                	.insn	2, 0x5050
+   10838:	5050                	.insn	2, 0x5050
+   1083a:	5050                	.insn	2, 0x5050
+   1083c:	5050                	.insn	2, 0x5050
+   1083e:	5050                	.insn	2, 0x5050
+   10840:	5050                	.insn	2, 0x5050
+   10842:	5050                	.insn	2, 0x5050
+   10844:	5050                	.insn	2, 0x5050
+   10846:	5050                	.insn	2, 0x5050
+   10848:	5050                	.insn	2, 0x5050
+   1084a:	5050                	.insn	2, 0x5050
+   1084c:	5050                	.insn	2, 0x5050
+   1084e:	5050                	.insn	2, 0x5050
+   10850:	5050                	.insn	2, 0x5050
+   10852:	5050                	.insn	2, 0x5050
+   10854:	5050                	.insn	2, 0x5050
+   10856:	5050                	.insn	2, 0x5050
+   10858:	5050                	.insn	2, 0x5050
+   1085a:	5050                	.insn	2, 0x5050
+   1085c:	5050                	.insn	2, 0x5050
+   1085e:	5050                	.insn	2, 0x5050
+   10860:	5050                	.insn	2, 0x5050
+   10862:	5050                	.insn	2, 0x5050
+   10864:	5050                	.insn	2, 0x5050
+   10866:	5050                	.insn	2, 0x5050
+   10868:	5050                	.insn	2, 0x5050
+   1086a:	5050                	.insn	2, 0x5050
+   1086c:	5050                	.insn	2, 0x5050
+   1086e:	5050                	.insn	2, 0x5050
+   10870:	5050                	.insn	2, 0x5050
+   10872:	5050                	.insn	2, 0x5050
+   10874:	5050                	.insn	2, 0x5050
+   10876:	5050                	.insn	2, 0x5050
+   10878:	5050                	.insn	2, 0x5050
+   1087a:	5050                	.insn	2, 0x5050
+   1087c:	5050                	.insn	2, 0x5050
+   1087e:	5050                	.insn	2, 0x5050
+   10880:	5050                	.insn	2, 0x5050
+   10882:	5050                	.insn	2, 0x5050
+   10884:	5050                	.insn	2, 0x5050
+   10886:	5050                	.insn	2, 0x5050
+   10888:	5050                	.insn	2, 0x5050
+   1088a:	5050                	.insn	2, 0x5050
+   1088c:	5050                	.insn	2, 0x5050
+   1088e:	5050                	.insn	2, 0x5050
+   10890:	5050                	.insn	2, 0x5050
+   10892:	5050                	.insn	2, 0x5050
+   10894:	5050                	.insn	2, 0x5050
+   10896:	5050                	.insn	2, 0x5050
+   10898:	5050                	.insn	2, 0x5050
+   1089a:	5050                	.insn	2, 0x5050
+   1089c:	5050                	.insn	2, 0x5050
+   1089e:	5050                	.insn	2, 0x5050
+   108a0:	5050                	.insn	2, 0x5050
+   108a2:	5050                	.insn	2, 0x5050
+   108a4:	5050                	.insn	2, 0x5050
+   108a6:	5050                	.insn	2, 0x5050
+   108a8:	5050                	.insn	2, 0x5050
+   108aa:	5050                	.insn	2, 0x5050
+   108ac:	5050                	.insn	2, 0x5050
+   108ae:	5050                	.insn	2, 0x5050
+   108b0:	5050                	.insn	2, 0x5050
+   108b2:	5050                	.insn	2, 0x5050
+   108b4:	5050                	.insn	2, 0x5050
+   108b6:	5050                	.insn	2, 0x5050
+   108b8:	5050                	.insn	2, 0x5050
+   108ba:	5050                	.insn	2, 0x5050
+   108bc:	5050                	.insn	2, 0x5050
+   108be:	0050                	.insn	2, 0x0050
