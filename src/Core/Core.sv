@@ -14,6 +14,7 @@ module Core#
 import RV32Consts::*;
 // ------- System Control -------
 
+logic exe_done;
 SysTimerIF sys_timer_if();
 SysTimer#(
     .CyclePerTick(128)
@@ -24,7 +25,6 @@ SysTimer#(
     .csr_if(sys_timer_if)
 );
 
-logic exe_done;
 logic[31:0] committed_pc;
 logic pred_miss;
 logic inst_valid;

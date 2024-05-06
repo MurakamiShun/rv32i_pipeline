@@ -19,6 +19,7 @@ always_comb begin
 end
 
 logic history_full;
+logic[31:0] current_pc;
 
 logic[31:0] next_pc;
 always_comb begin
@@ -39,7 +40,6 @@ FIFO #(
     .full(history_full)
 );
 
-logic[31:0] current_pc;
 always_comb begin
     if(!rst_n)begin
         inst_bus.addr = RST_INST_ADDR;
