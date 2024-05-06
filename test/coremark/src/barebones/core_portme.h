@@ -58,8 +58,8 @@ Original Author: Shay Gal-on
 #define HAS_PRINTF 0
 #endif
 
-#define CLOCKS_PER_SEC (100*1000*1000)
-#define ITERATIONS 1000
+#define CLOCKS_PER_SEC (20250*1000)
+#define ITERATIONS 200
 
 /* Definitions : COMPILER_VERSION, COMPILER_FLAGS, MEM_LOCATION
         Initialize these strings per platform

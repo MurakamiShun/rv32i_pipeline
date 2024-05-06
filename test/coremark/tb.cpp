@@ -29,17 +29,17 @@ int main(int argc, char **argv) {
         top->clk = 1;
         top->eval();
         if(top->uart_tx_en){
-            std::cout << (char)top->uart_data;
+            std::cout << (int)top->uart_data;
+            std::cout << std::endl;
         }
 
         //if(top->top__DOT__core__DOT__exe_en){
-            //std::cout << std::hex << "pc:" << std::setw(6) << (top->top__DOT__core__DOT__exe_stage__DOT__pc4 - 4) << std::endl;
+            // std::cout << std::hex << "pc:" << std::setw(6) << (top->top__DOT__core__DOT__exe_stage__DOT__pc4 - 4) << std::endl;
             
             // std::cout << std::hex << "pc:" << std::setw(6) << (top->top__DOT__core__DOT__exe_stage__DOT__pc4 - 4)
             // << ", rs1:" << std::setw(8) << top->top__DOT__core__DOT__exe_stage__DOT__rs1_fwd
             // << ", rs2:" << std::setw(8) << top->top__DOT__core__DOT__exe_stage__DOT__rs2_fwd
             // << ", alu:" << std::setw(8) << top->top__DOT__core__DOT__exe_stage__DOT__alu_result
-            // << ", op:" << alu_functs[top->top__DOT__core__DOT__exe_stage__DOT__microcode_latch[0] & 0xF].first
             // << ", ld data:" << std::setw(8) << top->top__DOT__core__DOT__exe_stage__DOT__ld_data
             // << ", rd en:" << std::setw(1) << (int)top->top__DOT__core__DOT__rd_en
             // << ", rd addr:" << std::dec << std::setw(2) << (int)top->top__DOT__core__DOT__rd_addr

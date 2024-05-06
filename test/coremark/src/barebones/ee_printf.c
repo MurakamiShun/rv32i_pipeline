@@ -665,7 +665,7 @@ void
 uart_send_char(char c)
 {
     uart_tx = c;
-    for(volatile int i = 0; i < 10; ++i) __asm__ volatile("nop;" : : :); // wait 10cycles
+    for(volatile int i = 0; i < 500; ++i) __asm__ volatile("nop;" : : :); // wait 10cycles
     /*	Output of a char to a UART usually follows the following model:
             Wait until UART is ready
             Write char to UART
