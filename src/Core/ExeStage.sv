@@ -45,7 +45,7 @@ always_comb begin
         | (!microcode_latch.ld_st_unit.en & microcode_latch.alu.en & en)
         | (microcode_latch.br_unit.en & en)
         | (microcode_latch.csr_unit.en & en);
-    branched = microcode_latch.br_unit.en & en;
+    branched = microcode_latch.br_unit.en & en && !(microcode_latch.br_unit.funct == BranchUnitFuncts::JAL) && !(microcode_latch.br_unit.funct == BranchUnitFuncts::JALR);
 end
 
 IntReg rs1_fwd, rs2_fwd;

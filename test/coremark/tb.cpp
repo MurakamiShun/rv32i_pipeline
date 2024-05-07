@@ -30,6 +30,11 @@ int main(int argc, char **argv) {
         top->eval();
         if(top->uart_tx_en){
             std::cout << (char)top->uart_data;
+            // if(top->uart_data == '2'){
+            //     std::cout << std::endl;
+            //     std::cout << std::dec << top->top__DOT__core__DOT__sys_timer__DOT__cycle
+            //     << ", " << top->top__DOT__core__DOT__sys_timer__DOT__instret << std::endl;
+            // }
         }
 
         // if(top->top__DOT__core__DOT__exe_en){
