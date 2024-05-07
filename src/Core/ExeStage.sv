@@ -12,6 +12,7 @@ module ExeStage(
     output logic busy,
     output logic done,
     output logic[31:0] committed_pc,
+    output logic branched,
     output logic rd_en,
     output logic[4:0] rd_addr,
     output logic[31:0] rd_data,
@@ -44,6 +45,7 @@ always_comb begin
         | (!microcode_latch.ld_st_unit.en & microcode_latch.alu.en & en)
         | (microcode_latch.br_unit.en & en)
         | (microcode_latch.csr_unit.en & en);
+    branched = microcode_latch.br_unit.en & en;
 end
 
 IntReg rs1_fwd, rs2_fwd;

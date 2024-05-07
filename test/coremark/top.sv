@@ -40,8 +40,8 @@ localparam RAM_ADDR_WIDTH = 15; // 0x8000
 logic[31:0] ram[2**(RAM_ADDR_WIDTH-2)-1:0];
 
 initial begin
-    //$readmemh("src/coremark_inst.hex", ram);
-    $readmemh("rv32i_test/rv32ui-p-sh.hex", ram);
+    $readmemh("src/coremark_inst.hex", ram);
+    //$readmemh("rv32i_test/rv32ui-p-jal.hex", ram);
 end
 
 logic[31:0] data_wbus_ram_addr;

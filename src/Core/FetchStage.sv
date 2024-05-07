@@ -5,6 +5,7 @@ module FetchStage#(
     input  logic rst_n,
     input logic committed,
     input logic[31:0] committed_pc,
+    input logic branched,
     
     output logic pred_miss,
     output logic inst_valid,
@@ -21,9 +22,34 @@ end
 logic history_full;
 logic[31:0] current_pc;
 
+logic[1:0] bi_cnt[7:0];
+logic[31:0] last_committed_pc;
+logic[31:0] last_committed_pc4;
+always_ff@(posedge clk)begin
+    if(committed)begin
+        last_committed_pc4 <= committed_pc + 32'h4;
+        last_committed_pc <= committed_pc;
+    end
+    if(branched & committed) begin
+        if(last_committed_pc4 == committed_pc) begin // not token
+            bi_cnt[last_committed_pc[4:2]] <= bi_cnt[last_committed_pc[4:2]] == 0 ? 0 : (bi_cnt[last_committed_pc[4:2]] - 1);
+        end else begin // token
+            bi_cnt[last_committed_pc[4:2]] <= bi_cnt[last_committed_pc[4:2]] == 2'b11 ? 2'b11 : (bi_cnt[last_committed_pc[4:2]] + 1);
+        end
+    end
+end
+
 logic[31:0] next_pc;
+function automatic logic[31:0] predicate_pc(input logic[31:0] pc, input Instruction last_inst);
+    if(last_inst.common.opcode == 7'b11000_11 && bi_cnt[current_pc[4:2]][1])begin
+        return pc + {{20{last_inst.Btype.imm12}}, last_inst.Btype.imm11, last_inst.Btype.imm10_5, last_inst.Btype.imm4_1, 1'b0};
+    end else begin
+        return pc + 32'h4;
+    end
+endfunction
+
 always_comb begin
-    next_pc = (pred_miss ? committed_pc : current_pc) + 32'h4;
+    next_pc = pred_miss ? (committed_pc + 32'h4) : predicate_pc(current_pc, inst_bus.data);
 end
 
 FIFO #(
@@ -75,7 +101,6 @@ always_ff@(posedge clk)begin
         inst.inst32 <= 32'h0;
         inst_valid <= 0;
     end
-
 end
 
 

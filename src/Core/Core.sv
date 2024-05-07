@@ -30,6 +30,7 @@ logic pred_miss;
 logic inst_valid;
 logic[31:0] inst;
 logic[31:0] inst_pc;
+logic branched;
 
 FetchStage #(
     .RST_INST_ADDR(RST_INST_ADDR)
@@ -38,6 +39,7 @@ FetchStage #(
     .rst_n(rst_n),
     .committed(exe_done),
     .committed_pc(committed_pc),
+    .branched(branched),
     
     .pred_miss(pred_miss),
     .inst_valid(inst_valid),
@@ -101,6 +103,7 @@ ExeStage exe_stage(
 
     .busy(exe_busy),
     .done(exe_done),
+    .branched(branched),
     .committed_pc(committed_pc),
     .rd_en(rd_en),
     .rd_addr(rd_addr),
