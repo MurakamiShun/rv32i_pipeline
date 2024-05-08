@@ -22,11 +22,11 @@ end
 logic history_full;
 logic[31:0] current_pc;
 
-logic[1:0] bi_cnt[15:0];
+logic[1:0] bi_cnt[31:0];
 logic[31:0] last_committed_pc;
 logic[31:0] last_committed_pc4;
-function automatic logic[3:0] bi_cnt_sel(input logic[31:0] pc);
-    return pc[5:2];
+function automatic logic[4:0] bi_cnt_sel(input logic[31:0] pc);
+    return pc[6:2];
 endfunction
 
 always_ff@(posedge clk)begin

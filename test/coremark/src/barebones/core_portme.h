@@ -59,7 +59,7 @@ Original Author: Shay Gal-on
 #endif
 
 #define CLOCKS_PER_SEC (20250*1000)
-#define ITERATIONS 200
+#define ITERATIONS 500
 
 /* Definitions : COMPILER_VERSION, COMPILER_FLAGS, MEM_LOCATION
         Initialize these strings per platform
