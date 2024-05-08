@@ -199,19 +199,33 @@ always_comb begin
         7'b01100_11 : begin // Reg-Reg Arithmetic
             inst_type = RType;
             micro_code.rd_src = RdSrc::ALU;
-            unique case({inst.Rtype.funct7[5], inst.Rtype.funct3})
-                4'b0000 : micro_code.alu.funct = ALUFuncts::ADD;
-                4'b1000 : micro_code.alu.funct = ALUFuncts::SUB;
-                4'b0001 : micro_code.alu.funct = ALUFuncts::SLL;
-                4'b0010 : micro_code.alu.funct = ALUFuncts::SLT;
-                4'b0011 : micro_code.alu.funct = ALUFuncts::SLTU;
-                4'b0100 : micro_code.alu.funct = ALUFuncts::XOR;
-                4'b0101 : micro_code.alu.funct = ALUFuncts::SRL;
-                4'b1101 : micro_code.alu.funct = ALUFuncts::SRA;
-                4'b0110 : micro_code.alu.funct = ALUFuncts::OR;
-                4'b0111 : micro_code.alu.funct = ALUFuncts::AND;
-                default: micro_code.alu.funct = ALUFuncts::Unknown;
-            endcase
+            unique if(inst.Rtype.funct7[1:0] == 2'b01)begin
+                unique case(inst.Rtype.funct3)
+                    3'b000 : micro_code.alu.funct = ALUFuncts::MUL;
+                    3'b001 : micro_code.alu.funct = ALUFuncts::MULH;
+                    3'b010 : micro_code.alu.funct = ALUFuncts::MULHSU;
+                    3'b011 : micro_code.alu.funct = ALUFuncts::MULHU;
+                    // 3'b100 : micro_code.alu.funct = ALUFuncts::DIV;
+                    // 3'b101 : micro_code.alu.funct = ALUFuncts::DIVU;
+                    // 3'b110 : micro_code.alu.funct = ALUFuncts::REM;
+                    // 3'b111 : micro_code.alu.funct = ALUFuncts::REMU;
+                    default: micro_code.alu.funct = ALUFuncts::Unknown;
+                endcase
+            end else begin
+                unique case({inst.Rtype.funct7[5], inst.Rtype.funct3})
+                    4'b0000 : micro_code.alu.funct = ALUFuncts::ADD;
+                    4'b1000 : micro_code.alu.funct = ALUFuncts::SUB;
+                    4'b0001 : micro_code.alu.funct = ALUFuncts::SLL;
+                    4'b0010 : micro_code.alu.funct = ALUFuncts::SLT;
+                    4'b0011 : micro_code.alu.funct = ALUFuncts::SLTU;
+                    4'b0100 : micro_code.alu.funct = ALUFuncts::XOR;
+                    4'b0101 : micro_code.alu.funct = ALUFuncts::SRL;
+                    4'b1101 : micro_code.alu.funct = ALUFuncts::SRA;
+                    4'b0110 : micro_code.alu.funct = ALUFuncts::OR;
+                    4'b0111 : micro_code.alu.funct = ALUFuncts::AND;
+                    default: micro_code.alu.funct = ALUFuncts::Unknown;
+                endcase
+            end
             micro_code.alu.op1_src = OP1Src::RS1;
             micro_code.alu.op2_src = OP2Src::RS2;
             micro_code.alu.en = 1;
