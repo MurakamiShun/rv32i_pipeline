@@ -31,6 +31,13 @@ package OP2Src;
     } Type;
 endpackage
 
+package ImmAdderSrc;
+    typedef enum logic {
+        RS1,
+        PC
+    } Type;
+endpackage
+
 package RdSrc;
     typedef enum logic[2:0] {
         ALU,
@@ -50,29 +57,33 @@ typedef struct packed {
 
     RV32Consts::IntReg imm_data;
     logic[31:0] pc;
-    
+
     // depend on each operation
+    RdSrc::Type rd_src;
     struct packed{
         ALUFuncts::Type funct;
         OP1Src::Type op1_src;
         OP2Src::Type op2_src;
         logic en;
     } alu;
-    RdSrc::Type rd_src;
-    struct packed{
-        BranchUnitFuncts::Type funct;
-        logic en;
-    } br_unit;
-    struct packed{
-        LoadStoreUnitFuncts::Type funct;
-        LoadStoreUnitBytes::Type bytes;
-        logic en;
-    } ld_st_unit;
-    struct packed{
-        CSRUnitFuncts::Type funct;
-        RS1Src::Type rs1_src;
-        logic en;
-    } csr_unit;
+    
+    ImmAdderSrc::Type imm_adder_src;
+
+    union packed{
+        struct packed{
+            LoadStoreUnitFuncts::Type funct;
+            LoadStoreUnitBytes::Type bytes;
+        } ld_st;
+        BranchUnitFuncts::Type br;
+        struct packed{
+            CSRUnitFuncts::Type funct;
+            RS1Src::Type rs1_src;
+        }csr;
+    } funct;
+    logic br_en;
+    logic ld_st_en;
+    logic csr_en;
+    logic jump_en;
 } MicroCode;
 
 `endif

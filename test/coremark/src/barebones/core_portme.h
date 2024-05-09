@@ -59,7 +59,7 @@ Original Author: Shay Gal-on
 #endif
 
 #define CLOCKS_PER_SEC (20250*1000)
-#define ITERATIONS 500
+#define ITERATIONS 1000
 
 /* Definitions : COMPILER_VERSION, COMPILER_FLAGS, MEM_LOCATION
         Initialize these strings per platform
@@ -73,7 +73,7 @@ Original Author: Shay Gal-on
 #endif
 #ifndef COMPILER_FLAGS
 #define COMPILER_FLAGS \
-    ("-O2 -march=rv32i -mabi=ilp32 -nostdlib -nostartfiles -mcmodel=medany -fvisibility=hidden -static")/* "Please put compiler flags here (e.g. -o3)" */
+    ("-O2 -march=rv32izcsr_zmmul -mabi=ilp32 -nostdlib -nostartfiles -mcmodel=medany -fvisibility=hidden -static")/* "Please put compiler flags here (e.g. -o3)" */
 #endif
 #ifndef MEM_LOCATION
 #define MEM_LOCATION "STACK"

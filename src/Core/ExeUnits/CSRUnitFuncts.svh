@@ -2,11 +2,11 @@
 `define CSR_UNIT_FUNCTS_SVH
 
 package CSRUnitFuncts;
-    typedef enum logic[1:0] {
-        ECallEBreak = 2'b00,
-        ReadWrite   = 2'b01,
-        ReadSet     = 2'b10,
-        ReadClear   = 2'b11
+    typedef enum logic[3:0] {
+        ECallEBreak = 'b00,
+        ReadWrite   = 'b01,
+        ReadSet     = 'b10,
+        ReadClear   = 'b11
     } Type;
 endpackage
 

@@ -158,5 +158,20 @@ portable_init(core_portable *p, int *argc, char *argv[])
 void
 portable_fini(core_portable *p)
 {
+    CORETIMETYPE cycle_cnt;
+    CORETIMETYPE instret_cnt;
+    __asm__ __volatile__(
+        "csrrw %0, cycle, zero"
+        : "=r"(cycle_cnt)
+        : // input is none
+        : "cc"
+    );
+    __asm__ __volatile__(
+        "csrrw %0, instret, zero"
+        : "=r"(instret_cnt)
+        : // input is none
+        : "cc"
+    );
+    ee_printf("cycles  : %d\ninstret : %d\n", cycle_cnt, instret_cnt);
     p->portable_id = 0;
 }

@@ -24,11 +24,6 @@ module ExeStage(
 import RV32Consts::*;
 
 logic br_token;
-IntReg alu_op1, alu_op2;
-IntReg alu_result;
-IntReg csr_wdata, csr_rdata;
-logic ld_st_busy, ld_st_done;
-IntReg ld_data;
 
 MicroCode microcode_reg;
 MicroCode microcode_latch;
@@ -42,10 +37,11 @@ end
 always_comb begin
     busy = ld_st_busy;
     done = ld_st_done
-        | (!microcode_latch.ld_st_unit.en & microcode_latch.alu.en & en)
-        | (microcode_latch.br_unit.en & en)
-        | (microcode_latch.csr_unit.en & en);
-    branched = microcode_latch.br_unit.en & en && !(microcode_latch.br_unit.funct == BranchUnitFuncts::JAL) && !(microcode_latch.br_unit.funct == BranchUnitFuncts::JALR);
+        | (!microcode_latch.ld_st_en & microcode_latch.alu.en & en)
+        | (microcode_latch.br_en & en)
+        | (microcode_latch.jump_en & en)
+        | (microcode_latch.csr_en & en);
+    branched = microcode_latch.br_en & en;
 end
 
 IntReg rs1_fwd, rs2_fwd;
@@ -63,7 +59,28 @@ always_comb begin
     end
 end
 
+// imm adder
+logic[31:0] imm_adder_result;
+logic[31:0] imm_adder_src;
+always_comb begin
+    unique case(microcode_latch.imm_adder_src)
+        ImmAdderSrc::RS1 : imm_adder_src = rs1_fwd;
+        ImmAdderSrc::PC  : imm_adder_src = microcode_latch.pc;
+    endcase
+    imm_adder_result = imm_adder_src + microcode_latch.imm_data;
+end
+
+// pc
+logic[31:0] pc4;
+always_comb begin
+    pc4 = microcode_latch.pc + 32'h4;
+    committed_pc = (en & (br_token | microcode_latch.jump_en)) ? imm_adder_result : pc4;
+end
+
+
 // alu
+IntReg alu_op1, alu_op2;
+IntReg alu_result;
 always_comb begin
     unique case(microcode_latch.alu.op1_src)
         OP1Src::RS1  : alu_op1 = rs1_fwd;
@@ -77,53 +94,50 @@ always_comb begin
         default     : alu_op2 = 32'bx;
     endcase
 end
-
-// pc
-logic[31:0] pc4;
-always_comb begin
-    pc4 = microcode_latch.pc + 32'h4;
-    committed_pc = br_token ? alu_result : pc4;
-end
-// csr
-always_comb begin
-    unique case(microcode_latch.csr_unit.rs1_src)
-        RS1Src::REG  : csr_wdata = rs1_fwd;
-        RS1Src::ADDR : csr_wdata = {27'b0, microcode_latch.rs1_addr};
-        default      : csr_wdata = 32'bx;
-    endcase
-end
-
 ALU alu(
     .op1(alu_op1),
     .op2(alu_op2),
     .funct(microcode_latch.alu.funct),
     .result(alu_result)
 );
+
 BranchUnit br_unit(
-    .en(microcode_latch.br_unit.en & en),
+    .en(microcode_latch.br_en & en),
     .op1(rs1_fwd),
     .op2(rs2_fwd),
-    .funct(microcode_latch.br_unit.funct),
+    .funct(microcode_latch.funct.br),
     .token(br_token)
 );
 
+// csr
+IntReg csr_wdata, csr_rdata;
+always_comb begin
+    unique case(microcode_latch.funct.csr.rs1_src)
+        RS1Src::REG  : csr_wdata = rs1_fwd;
+        RS1Src::ADDR : csr_wdata = {27'b0, microcode_latch.rs1_addr};
+        default      : csr_wdata = 32'bx;
+    endcase
+end
 CSRUnit csr_unit(
-    .en(microcode_latch.csr_unit.en & en),
+    .en(microcode_latch.csr_en & en),
     .addr(microcode_latch.imm_data[11:0]),
     .in_data(csr_wdata),
-    .funct(microcode_latch.csr_unit.funct),
+    .funct(microcode_latch.funct.csr.funct),
     .out_data(csr_rdata),
     .sys_timer_if(sys_timer_if)
 );
 
+// load store
+logic ld_st_busy, ld_st_done;
+IntReg ld_data;
 LoadStoreUnit ld_st_unit(
     .clk(clk),
     .rst_n(rst_n),
-    .en(microcode_latch.ld_st_unit.en & en),
-    .addr(alu_result),
+    .en(microcode_latch.ld_st_en & en),
+    .addr(imm_adder_result),
     .wdata(rs2_fwd),
-    .funct(microcode_latch.ld_st_unit.funct),
-    .bytes(microcode_latch.ld_st_unit.bytes),
+    .funct(microcode_latch.funct.ld_st.funct),
+    .bytes(microcode_latch.funct.ld_st.bytes),
 
     .rdata(ld_data),
 
